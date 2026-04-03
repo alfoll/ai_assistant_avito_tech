@@ -1,4 +1,4 @@
-package com.example.aiassistant.ui.theme
+package com.alfoll.aiassistant.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

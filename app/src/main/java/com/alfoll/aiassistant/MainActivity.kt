@@ -1,4 +1,4 @@
-package com.example.aiassistant
+package com.alfoll.aiassistant
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.aiassistant.ui.theme.Ai_assistant_avito_techTheme
+import com.alfoll.aiassistant.ui.theme.Ai_assistant_avito_techTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
