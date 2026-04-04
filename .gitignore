@@ -9,6 +9,9 @@
 .cxx
 local.properties
 
+**/build/
+*.apk
+
 google-services.json
 *.jks
 *.keystore

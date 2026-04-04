@@ -8,27 +8,59 @@ import com.alfoll.aiassistant.ui.auth.AuthScreen
 import com.alfoll.aiassistant.ui.chat.ChatScreen
 import com.alfoll.aiassistant.ui.chatlist.ChatListScreen
 import com.alfoll.aiassistant.ui.profile.ProfileScreen
-
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun AppNavGraph() {
     val navController = rememberNavController()
 
+    val startDestination = if (FirebaseAuth.getInstance().currentUser != null) {
+        Routes.CHAT_LIST
+    } else {
+        Routes.AUTH
+    }
+
     NavHost(
         navController = navController,
-        startDestination = Routes.AUTH
+        startDestination = startDestination
     ) {
         composable(Routes.AUTH) {
-            AuthScreen()
+            AuthScreen(
+                onAuthSuccess = {
+                    navController.navigate(Routes.CHAT_LIST) {
+                        popUpTo(Routes.AUTH) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                }
+            )
         }
+
         composable(Routes.CHAT_LIST) {
-            ChatListScreen()
+            ChatListScreen(
+                onLogout = {
+                    navController.navigate(Routes.AUTH) {
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }
+            )
         }
+
         composable(Routes.CHAT) {
             ChatScreen()
         }
+
         composable(Routes.PROFILE) {
-            ProfileScreen()
+            ProfileScreen(
+                onLogout = {
+                    navController.navigate(Routes.AUTH) {
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }
+            )
         }
     }
 }
