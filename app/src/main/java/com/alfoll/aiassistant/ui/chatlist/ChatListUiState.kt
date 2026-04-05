@@ -7,6 +7,5 @@ data class ChatListItemModel(
 
 data class ChatListUiState(
     val searchQuery: String = "",
-    val displayedChats: List<ChatListItemModel> = emptyList(),
-    val isLoading: Boolean = true
+    val appliedSearchQuery: String = ""
 )

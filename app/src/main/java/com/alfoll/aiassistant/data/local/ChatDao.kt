@@ -1,5 +1,6 @@
 package com.alfoll.aiassistant.data.local
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -16,7 +17,7 @@ interface ChatDao {
         ORDER BY createdAt DESC
         """
     )
-    fun observeChats(searchQuery: String): Flow<List<ChatEntity>>
+    fun pagingSource(searchQuery: String): PagingSource<Int, ChatEntity>
 
     @Query("SELECT * FROM chats WHERE id = :chatId LIMIT 1")
     fun observeChat(chatId: String): Flow<ChatEntity?>

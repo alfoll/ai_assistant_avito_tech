@@ -30,6 +30,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,6 +41,7 @@ fun ChatListScreen(
     onOpenChat: (String) -> Unit
 ) {
     val uiState = viewModel.uiState
+    val pagedChats = viewModel.pagedChatsFlow.collectAsLazyPagingItems()
 
     Scaffold(
         topBar = {
@@ -85,7 +88,7 @@ fun ChatListScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             when {
-                uiState.isLoading -> {
+                pagedChats.loadState.refresh is LoadState.Loading -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
@@ -94,7 +97,7 @@ fun ChatListScreen(
                     }
                 }
 
-                uiState.displayedChats.isEmpty() && uiState.searchQuery.isBlank() -> {
+                pagedChats.itemCount == 0 && uiState.appliedSearchQuery.isBlank() -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
@@ -103,7 +106,7 @@ fun ChatListScreen(
                     }
                 }
 
-                uiState.displayedChats.isEmpty() -> {
+                pagedChats.itemCount == 0 -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
@@ -119,13 +122,28 @@ fun ChatListScreen(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(
-                            items = uiState.displayedChats,
-                            key = { it.id }
-                        ) { chat ->
+                            count = pagedChats.itemCount,
+                            key = { index -> pagedChats[index]?.id ?: index }
+                        ) { index ->
+                            val chat = pagedChats[index] ?: return@items
+
                             ChatListItem(
                                 chat = chat,
                                 onClick = { onOpenChat(chat.id) }
                             )
+                        }
+
+                        if (pagedChats.loadState.append is LoadState.Loading) {
+                            item {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 16.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator()
+                                }
+                            }
                         }
                     }
                 }
